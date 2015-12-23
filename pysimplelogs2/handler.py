@@ -29,12 +29,13 @@ class SimplelogHandler(logging.Handler):
                 cls=APIEncoder,
                 encoding='utf-8',
                 ensure_ascii=False
-            )
+            ).encode('utf-8')
             try:
                 self.send_func(self.url + '/api/entry/', data)
                 return
-            except:
-                pass
+            except Exception, e:
+                import traceback
+                traceback.print_exc()
         if self.fallback:
             self.fallback.emit(record)
 

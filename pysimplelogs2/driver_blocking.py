@@ -4,12 +4,13 @@ import requests
 __author__ = 'viruzzz-kun'
 
 
-def send(url, data):
+def send(url, data, timeout=10):
     requests.post(
         url,
         data=data,
         headers={
             'Content-type': 'application/json',
-            'Accept': 'text/plain'
-        }
+            'Accept': 'application/json; text/plain',
+        },
+        timeout=timeout,
     )
