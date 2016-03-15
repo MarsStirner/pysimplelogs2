@@ -7,11 +7,17 @@ from pysimplelogs2.apiencoder import APIEncoder
 __author__ = 'viruzzz-kun'
 
 
+fallback_handler = logging.StreamHandler()
+fallback_handler.setFormatter(logging.Formatter('%(asctime)s [pid:%(process)d|%(name)s|%(levelname)s] - %(message)s'))
+error_logger = logging.getLogger('PySimplelogs')
+error_logger.addHandler(fallback_handler)
+
+
 class SimplelogHandler(logging.Handler):
     url = None
     send_func = None
     owner = None
-    fallback = logging.StreamHandler()
+    fallback = fallback_handler
 
     def emit(self, record):
         """
@@ -19,6 +25,8 @@ class SimplelogHandler(logging.Handler):
         :param record:
         :return:
         """
+        if self.fallback:
+            self.fallback.emit(record)
         if self.send_func and self.url:
             data = json.dumps({
                 'level': record.levelname.lower(),
@@ -33,11 +41,9 @@ class SimplelogHandler(logging.Handler):
             try:
                 self.send_func(self.url + '/api/entry/', data)
                 return
-            except Exception, e:
-                import traceback
-                traceback.print_exc()
-        if self.fallback:
-            self.fallback.emit(record)
+            except:
+                error_logger.exception()
+                error_logger.error('Error connecting to %s. Passing...', self.url)
 
     def setFormatter(self, fmt):
         if self.fallback:
