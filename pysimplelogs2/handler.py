@@ -42,8 +42,7 @@ class SimplelogHandler(logging.Handler):
                 self.send_func(self.url + '/api/entry/', data)
                 return
             except:
-                error_logger.exception()
-                error_logger.error('Error connecting to %s. Passing...', self.url)
+                error_logger.exception('Error connecting to %s. Passing...', self.url)
 
     def setFormatter(self, fmt):
         if self.fallback:
