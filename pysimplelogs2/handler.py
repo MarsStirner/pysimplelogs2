@@ -57,10 +57,12 @@ class SimplelogHandler(logging.Handler):
 
 
 def __configure_default_send():
-    try:
-        from pysimplelogs2.driver_uwsgi import send
-    except ImportError:
-        from pysimplelogs2.driver_blocking import send
+    # doesn't work with uwsgi lazy-apps
+    # try:
+    #     from pysimplelogs2.driver_uwsgi import send
+    # except ImportError:
+    #     from pysimplelogs2.driver_blocking import send
+    from pysimplelogs2.driver_blocking import send
     SimplelogHandler.send_func = staticmethod(send)
 
 __configure_default_send()
